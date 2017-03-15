@@ -1,0 +1,53 @@
+atomix:
+  replicas:
+    - localhost:8700
+    - localhost:8701
+    - localhost:8702
+  storageLocation: /tmp/atomix
+  increment: true
+  incrementTimeoutSec: 18000 # 5 hours
+
+logging:
+  file:
+  pattern:
+#    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%C){cyan} %clr(:){faint} %m%n%wex"
+  level: DEBUG
+#    i.a.c.transport.netty.NettyClient: ERROR
+#    io.atomix.catalyst.transport.netty.NettyClient: WARN
+
+---
+spring:
+  profiles: node0
+atomix:
+  replicaNumber: 0
+logging:
+  file: /tmp/atomixlog/node0.log
+
+---
+spring:
+  profiles: node1
+atomix:
+  replicaNumber: 1
+logging:
+  file: /tmp/atomixlog/node1.log
+
+---
+spring:
+  profiles: node2
+atomix:
+  replicaNumber: 2
+logging:
+  file: /tmp/atomixlog/node2.log
+
+---
+spring:
+  profiles: node2-listen
+atomix:
+  replicaNumber: 2
+  increment: false
+logging:
+  file: /tmp/atomixlog/node2.log
+
+
+# java -jar build/libs/atomixtest-0.0.1-SNAPSHOT.jar --spring.profiles.active=node2
+# java -Datomix.incrementTimeoutSec=5 -jar build/libs/atomixtest-0.0.1-SNAPSHOT.jar --spring.profiles.active=node0
